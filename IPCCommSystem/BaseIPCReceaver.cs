@@ -1,5 +1,4 @@
 ﻿using System;
-using SimpleIPCCommSystem;
 using System.Diagnostics;
 using System.Threading;
 using System.Runtime.Remoting;
