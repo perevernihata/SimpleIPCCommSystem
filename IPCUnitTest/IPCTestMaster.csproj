@@ -54,9 +54,11 @@
     <Compile Include="..\ICPTestSlave\SlaveResponces.cs">
       <Link>SlaveResponces.cs</Link>
     </Compile>
+    <Compile Include="GlobalApplicationReceaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AsyncUnitTest.cs" />
     <Compile Include="SlaveManager.cs" />
+    <Compile Include="SyncUnitTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

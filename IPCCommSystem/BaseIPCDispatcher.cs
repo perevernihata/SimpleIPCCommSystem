@@ -37,19 +37,17 @@ namespace SimpleIPCCommSystem {
 
             string receaverUri = 
                 String.Format("ipc://{0}/{1}",_receaverID.Value, IPCBaseMessagesQueue.URISuffix);
-            Console.WriteLine("Dispatch uri = " + receaverUri);
 
             _receaverQueue = (IPCBaseMessagesQueue)Activator.GetObject(typeof(IPCBaseMessagesQueue),
                 receaverUri);
             message.SenderID = _dispatcherID;
             try {
                 if (RemotingServices.IsTransparentProxy(_receaverQueue)) {
-                    Console.WriteLine(_receaverQueue.Count());
                     _receaverQueue.EnqueueMessage(message);
                     _receaverWaitHandle.Set();
-                    // TODO: implement timeout
                     if (message.MessageType == IPCDispatchType.Sync) {
-                        _dispatcherWaitHandle.WaitOne();
+                        if (!_dispatcherWaitHandle.WaitOne(timeout))
+                            return IPCDispatchResult.Timeout;
                     }
                 }
             } catch (Exception ex) {               

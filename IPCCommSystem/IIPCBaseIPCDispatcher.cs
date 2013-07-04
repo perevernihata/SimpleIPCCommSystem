@@ -4,7 +4,7 @@ namespace SimpleIPCCommSystem {
     public enum IPCDispatchResult {
         Fail,
         Success,
-        OutOfTimeout
+        Timeout
     }
 
     public interface IIPCBaseIPCDispatcher {

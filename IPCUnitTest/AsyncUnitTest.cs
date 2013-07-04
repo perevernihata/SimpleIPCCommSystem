@@ -8,15 +8,18 @@ using SharedMessages;
 namespace IPCUnitTest {
     [TestClass]
     public class AsyncUnitTest {
-        private BaseIPCReceaver recipient = new BaseIPCReceaver();
         private bool responceReceaved = false;
 
         public AsyncUnitTest() {
-            recipient.OnReceaveIPCMessage += OnReceaveMessage;
+            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage += OnReceaveMessage;
+        }
+
+        ~AsyncUnitTest() {
+            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
         }
 
         [TestMethod]
-        public void DoTest() {
+        public void DoTestSimpleAsyncMessage() {
             IIPCGUID slaveReceaverGUID = new IIPCGUID(SlaveManager.Instance().LaunchSlave());
             // wait for slave is launched and ininialized;
             // TODO: contimue after receaving message ???

@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAsyncMessage.cs" />
+    <Compile Include="TestSyncMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IPCCommSystem\SimpleIPCCommSystem.csproj">

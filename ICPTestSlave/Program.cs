@@ -1,6 +1,7 @@
 ﻿using System;
 using SimpleIPCCommSystem;
 using SharedMessages;
+using System.Threading;
 
 namespace ICPTestSlave {
     class SlaveMain {
@@ -20,6 +21,14 @@ namespace ICPTestSlave {
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(testAsyncMessage.SenderID)) {
                     dispatcher.Dispatch(test);
                 }
+                return;
+            }
+
+            TestSyncMessage testSyncMessage = message as TestSyncMessage;
+            if (testSyncMessage != null) {
+                // responce to master - does not work now
+                Thread.CurrentThread.Join(SlaveResponces.SyncMessageSlaveDelay);
+                testSyncMessage.StrOut = "testOut";
             }
         }
     }
