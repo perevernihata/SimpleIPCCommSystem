@@ -4,10 +4,13 @@ using System.Threading;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.Remoting.Channels;
+using SimpleIPCCommSystem.Resources;
+using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
 
 namespace SimpleIPCCommSystem {
     public class BaseIPCReceaver : IIPCBaseReceaver, IDisposable {
-        private IIPCGUID _ownGUID;
+        private IPCGUID _ownGUID;
         private Thread _worker;
         private object _locker = new object();
         private EventWaitHandle _currentWaitHandle;
@@ -15,7 +18,7 @@ namespace SimpleIPCCommSystem {
         private IpcServerChannel channel;
 
         public BaseIPCReceaver() {
-            _ownGUID = new IIPCGUID(Process.GetCurrentProcess().Id);
+            _ownGUID = new IPCGUID(Process.GetCurrentProcess().Id);
             _currentWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
                  _ownGUID.Value);
             _currentQueue = DoCreateQueue();
@@ -23,9 +26,9 @@ namespace SimpleIPCCommSystem {
             channel = new IpcServerChannel(_ownGUID.Value);
             ChannelServices.RegisterChannel(channel, true);
             ObjRef QueueRef = RemotingServices.Marshal(_currentQueue,
-                IPCBaseMessagesQueue.URISuffix, 
+                _currentQueue.UriSuffix, 
                 typeof(IPCBaseMessagesQueue));
-            QueueRef.URI = String.Format("ipc://{0}/{1}", _ownGUID.Value, IPCBaseMessagesQueue.URISuffix);
+            QueueRef.URI = new IPCUri(_ownGUID, _currentQueue).Value; // TODO: get rid of this code?
             _worker = new Thread(ListenQueue);
             _worker.Start();
         }
@@ -54,7 +57,7 @@ namespace SimpleIPCCommSystem {
             }
         }
 
-        protected virtual IIPCGUID DoGetReceaverID() {
+        protected virtual IPCGUID DoGetReceaverID() {
             return _ownGUID; 
         }
 

@@ -4,6 +4,8 @@ using SimpleIPCCommSystem;
 using ICPTestSlave;
 using System.Threading;
 using SharedMessages;
+using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
 
 namespace IPCUnitTest {
     [TestClass]
@@ -20,11 +22,12 @@ namespace IPCUnitTest {
 
         [TestMethod]
         public void DoTestSimpleAsyncMessage() {
-            IIPCGUID slaveReceaverGUID = new IIPCGUID(SlaveManager.Instance().LaunchSlave());
+            IIPCGUID slaveReceaverGUID = new IPCGUID(SlaveManager.Instance().LaunchSlave());
             // wait for slave is launched and ininialized;
             // TODO: contimue after receaving message ???
             Thread.CurrentThread.Join(3000);
-            TestAsyncMessage test = new TestAsyncMessage("Hi Slave!");
+            TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
+            test.StrData = "Hi Slave!";
             using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
                 Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
             }

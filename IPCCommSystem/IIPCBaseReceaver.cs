@@ -1,4 +1,6 @@
 ﻿using System;
+using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem.Messages;
 
 namespace SimpleIPCCommSystem {
 

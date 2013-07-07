@@ -1,5 +1,6 @@
 ﻿using System;
-using SimpleIPCCommSystem;
+using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
 
 namespace SharedMessages {
 
@@ -7,12 +8,11 @@ namespace SharedMessages {
     /// Test async message used to show how this IPCCommSystem.dll can handle
     /// async IPC messaging
     /// </summary>
-    [Serializable()]   
-    public class TestAsyncMessage : BaseIPCMessage {
+    [Serializable]
+    public class TestAsyncMessage : IPCBaseAsyncMessage {
         public string StrData { get; set; }
-        public TestAsyncMessage(string strData)
-            : base(IPCDispatchType.Async) {
-            StrData = strData;
+
+        public TestAsyncMessage(IIPCGUID senderID): base(senderID) {
         }
     }
 }

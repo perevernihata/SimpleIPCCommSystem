@@ -7,34 +7,35 @@ using SimpleIPCCommSystem;
 using SharedMessages;
 using System.Threading;
 using ICPTestSlave;
+using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem.Messages;
 
 namespace IPCUnitTest {
     [TestClass]
     public class SyncUnitTest {
 
         public SyncUnitTest() {
-            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage += OnReceaveMessage;
         }
 
         ~SyncUnitTest() {
-            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
         }
 
         [TestMethod]
         public void DoTestSimpleSyncMessage() {
-            IIPCGUID slaveReceaverGUID = new IIPCGUID(SlaveManager.Instance().LaunchSlave());
+            IIPCGUID slaveReceaverGUID = new IPCGUID(SlaveManager.Instance().LaunchSlave());
             // wait for slave is launched and ininialized;
             Thread.CurrentThread.Join(1000);
-            TestSyncMessage test = new TestSyncMessage("Hi Slave!");
-
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                Assert.IsTrue(dispatcher.Dispatch(test, SlaveResponces.SyncMessageSlaveDelay + 2000) ==
-                    IPCDispatchResult.Success, "Time is up");
+            TestSyncMessage test = new TestSyncMessage(new IPCGUID(), 0);
+            test.StrIn = "Hi Slave!";
+            test.TimeOut = Int32.MaxValue; // !! //SlaveResponces.SyncMessageSlaveDelay + 2000;
+            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(test.SenderID)) {
+                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Time is up");
             }
 
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                Assert.IsTrue(dispatcher.Dispatch(test, SlaveResponces.SyncMessageSlaveDelay - 2000)
-                    == IPCDispatchResult.Timeout, "Timeout is explected result");
+            test.TimeOut = Int32.MaxValue;// SlaveResponces.SyncMessageSlaveDelay - 2000;
+            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(test.SenderID)) {
+                Assert.IsTrue(dispatcher.Dispatch(test)
+                    == IPCDispatchResult.Timeout, "Timeout is an expected result");
             }                    
         }
     }

@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleIPCCommSystem.Messages;
 
 namespace SimpleIPCCommSystem {
-    public class IPCBaseMessagesQueue : MarshalByRefObject {
-        public static string URISuffix = "IPCMessagesQueue";
+    public class IPCBaseMessagesQueue : MarshalByRefObject, IIPCSharedObject {
+        public static string URISuffix = "IPCMessagesQueueSuffix";
 
         Queue<IIPCBaseMessage> tasks = new Queue<IIPCBaseMessage>();
         public IPCBaseMessagesQueue() {
         }
 
-        public void EnqueueMessage(IIPCBaseMessage task) {
-            tasks.Enqueue(task);
+        public void EnqueueMessage(IIPCBaseMessage message) {
+            tasks.Enqueue(message);
         }
 
         public IIPCBaseMessage DequeueMessage() {
-            return tasks.Dequeue();
+            IIPCBaseMessage tmpResult = tasks.Dequeue();
+            if (tmpResult is IPCSyncHelperMessage) {
+                IPCSyncHelperMessage realMessageHelper = tmpResult as IPCSyncHelperMessage;
+                IIPCBaseMessage realMessage = (IIPCBaseMessage)Activator.GetObject(realMessageHelper.OwnerType,
+                    realMessageHelper.OwnerFullUri);
+                return realMessage;
+            } else
+                return tmpResult;
+
         }
 
         public int Count() {
@@ -23,6 +32,10 @@ namespace SimpleIPCCommSystem {
 
         public override object InitializeLifetimeService() {
             return null;
+        }
+
+        public string UriSuffix {
+            get { return URISuffix; }
         }
     }
 }

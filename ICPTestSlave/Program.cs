@@ -2,6 +2,8 @@
 using SimpleIPCCommSystem;
 using SharedMessages;
 using System.Threading;
+using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
 
 namespace ICPTestSlave {
     class SlaveMain {
@@ -17,7 +19,8 @@ namespace ICPTestSlave {
             TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
             if (testAsyncMessage != null) {
                 // responce to master
-                TestAsyncMessage test = new TestAsyncMessage(SlaveResponces.TestAsyncResponceString);
+                TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
+                test.StrData = SlaveResponces.TestAsyncResponceString;
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(testAsyncMessage.SenderID)) {
                     dispatcher.Dispatch(test);
                 }

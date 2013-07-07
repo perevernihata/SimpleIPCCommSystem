@@ -1,18 +1,19 @@
-﻿using System;
-using SimpleIPCCommSystem;
+﻿using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
 
 namespace SharedMessages {
     /// <summary>
     /// Test async message used to show how this IPCCommSystem.dll can handle
     /// async IPC messaging
     /// </summary>
-    [Serializable()]
-    public class TestSyncMessage : BaseIPCMessage {
+    public class TestSyncMessage : IPCBaseSyncMessage {
         public string StrIn { get; set; }
         public string StrOut { get; set; }
-        public TestSyncMessage(string strIn)
-            : base(IPCDispatchType.Sync) {
-            StrIn = strIn;
+
+        public TestSyncMessage(IIPCGUID senderID,
+            int timeout)
+            : base(senderID, timeout) {
         }
+
     }
 }

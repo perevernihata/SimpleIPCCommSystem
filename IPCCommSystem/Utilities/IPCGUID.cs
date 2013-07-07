@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace SimpleIPCCommSystem {
+namespace SimpleIPCCommSystem.Utilities {
 
     [Serializable()]
-    public class IIPCGUID {
+    public class IPCGUID : IIPCGUID {
 
-        public static IIPCGUID Uncpecifyed = new IIPCGUID("unspecifyed");
-
+        public static IPCGUID Uncpecifyed = new IPCGUID("unspecifyed");
+        
         private string value;
-        private readonly string prefix = "IPCWinCommSystem";
+        private readonly string prefix = "IPCSimpleCommSystem";
 
         public string Value {
             get {
@@ -17,15 +17,15 @@ namespace SimpleIPCCommSystem {
             }
         }
 
-        public IIPCGUID() {
+        public IPCGUID() {
             value = prefix + Process.GetCurrentProcess().Id;
         }
 
-        public IIPCGUID(string guid) {
+        public IPCGUID(string guid) {
             value = prefix + guid;
         }
 
-        public IIPCGUID(int guid) {
+        public IPCGUID(int guid) {
             value = prefix + guid.ToString();
         }
     }

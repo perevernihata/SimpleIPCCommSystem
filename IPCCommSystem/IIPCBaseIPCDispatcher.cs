@@ -1,4 +1,6 @@
-﻿
+﻿using SimpleIPCCommSystem.Messages;
+using SimpleIPCCommSystem.Utilities;
+
 namespace SimpleIPCCommSystem {
 
     public enum IPCDispatchResult {
@@ -8,7 +10,7 @@ namespace SimpleIPCCommSystem {
     }
 
     public interface IIPCBaseIPCDispatcher {
-        IPCDispatchResult Dispatch(IIPCBaseMessage message, int timeout = 0);
+        IPCDispatchResult Dispatch(IIPCBaseMessage message);
 
         IIPCGUID Receaver { get; }
     }

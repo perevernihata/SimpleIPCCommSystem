@@ -50,6 +50,7 @@ namespace IPCUnitTest {
             }
             slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             slaveStartInfo.CreateNoWindow = true;
+
             slaveProc = Process.Start(slaveStartInfo);
             return slaveProc.Id;
         }

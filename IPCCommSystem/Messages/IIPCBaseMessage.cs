@@ -1,5 +1,6 @@
-﻿
-namespace SimpleIPCCommSystem {
+﻿using SimpleIPCCommSystem.Utilities;
+
+namespace SimpleIPCCommSystem.Messages {
 
     public enum IPCDispatchType {
         Async,
