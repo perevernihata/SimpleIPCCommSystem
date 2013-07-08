@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Threading;
 using System.Runtime.Remoting;
@@ -23,10 +24,17 @@ namespace SimpleIPCCommSystem {
                  _ownGUID.Value);
             _currentQueue = DoCreateQueue();
 
-            channel = new IpcServerChannel(_ownGUID.Value);
-            ChannelServices.RegisterChannel(channel, true);
+            // do not use security
+            // ensure that IPC server is alive
+            if (!ChannelServices.RegisteredChannels.Any(i => i.ChannelName == _ownGUID.Value)) {
+                channel = new IpcServerChannel(_ownGUID.Value, _ownGUID.Value);
+                if (!ChannelServices.RegisteredChannels.Any(i => i == channel)) {
+                    ChannelServices.RegisterChannel(channel, false);
+                }
+            }
+
             ObjRef QueueRef = RemotingServices.Marshal(_currentQueue,
-                _currentQueue.UriSuffix, 
+                _currentQueue.UriSuffix,
                 typeof(IPCBaseMessagesQueue));
             QueueRef.URI = new IPCUri(_ownGUID, _currentQueue).Value; // TODO: get rid of this code?
             _worker = new Thread(ListenQueue);
@@ -37,28 +45,28 @@ namespace SimpleIPCCommSystem {
             while (true) {
                 IIPCBaseMessage message = null;
 
-                lock (_locker) {
-                    if (_currentQueue.Count() > 0) {
-                        message = _currentQueue.DequeueMessage();
+                    lock (_locker) {
+                        if (_currentQueue.Count() > 0) {
+                            message = _currentQueue.DequeueMessage();
+                        }
                     }
-                }
-                if (message != null) {
-                    if (message.MessageType == IPCDispatchType.Sync) {
-                        using (EventWaitHandle _receaverWaitHandle = 
-                            new EventWaitHandle(false, EventResetMode.AutoReset, message.SenderID.Value)) {
+                    if (message != null) {
+                        if (message.MessageType == IPCDispatchType.Sync) {
+                            using (EventWaitHandle _receaverWaitHandle =
+                                new EventWaitHandle(false, EventResetMode.AutoReset, message.SenderID.Value)) {
+                                OnReceaveIPCMessage(this, message);
+                                _receaverWaitHandle.Set();
+                            };
+                        } else {
                             OnReceaveIPCMessage(this, message);
-                            _receaverWaitHandle.Set();
-                        };
-                    } else {
-                        OnReceaveIPCMessage(this, message);
-                    }
-                } else
-                    _currentWaitHandle.WaitOne();      
+                        }
+                    } else
+                        _currentWaitHandle.WaitOne();
             }
         }
 
         protected virtual IPCGUID DoGetReceaverID() {
-            return _ownGUID; 
+            return _ownGUID;
         }
 
         protected virtual IPCBaseMessagesQueue DoCreateQueue() {
@@ -72,7 +80,7 @@ namespace SimpleIPCCommSystem {
 
         public void Dispose() {
             _worker.Join();
-            _currentWaitHandle.Close();             
+            _currentWaitHandle.Close();
         }
 
         public event ReceaveIPCMessageEventHandler OnReceaveIPCMessage;

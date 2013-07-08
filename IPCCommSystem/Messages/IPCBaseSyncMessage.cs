@@ -1,5 +1,6 @@
 ﻿using System;
 using SimpleIPCCommSystem.Utilities;
+using System.Runtime.Remoting.Lifetime;
 
 namespace SimpleIPCCommSystem.Messages {
 
@@ -30,6 +31,15 @@ namespace SimpleIPCCommSystem.Messages {
 
         public string UriSuffix {
             get { return "BaseSyncMessageSuffix"; }
+        }
+
+        public Type GetRealMessageType() {
+            return this.GetType(); 
+        }
+
+        public override object InitializeLifetimeService() {
+            // force leave proxy object alive
+            return null;
         }
     }
 

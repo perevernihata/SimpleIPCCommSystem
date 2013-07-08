@@ -17,7 +17,8 @@ namespace SimpleIPCCommSystem {
         private EventWaitHandle _dispatcherWaitHandle;
         private IPCBaseMessagesQueue _receaverQueue;
 
-        private static IpcClientChannel channel = new IpcClientChannel();
+        private static IpcClientChannel clientChannel = new IpcClientChannel();
+        private static IpcServerChannel serverChannel;
 
         public BaseIPCDispatcher(IIPCGUID receaverID) {
             // create receaver wait handle
@@ -29,9 +30,8 @@ namespace SimpleIPCCommSystem {
             _dispatcherID = new IPCGUID();
             _dispatcherWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
                 _dispatcherID.Value);
-
-            if (!ChannelServices.RegisteredChannels.Any(i => i == channel)) {
-                ChannelServices.RegisterChannel(channel, true);
+            if (!ChannelServices.RegisteredChannels.Any(i => i == clientChannel)) {
+                ChannelServices.RegisterChannel(clientChannel, true);
             }
         }
 
@@ -77,6 +77,14 @@ namespace SimpleIPCCommSystem {
                 return IPCDispatchResult.Fail;
             }
 
+            // ensure that IPC server is alive
+            if (!ChannelServices.RegisteredChannels.Any(i => i.ChannelName == _dispatcherID.Value)) {
+                serverChannel = new IpcServerChannel(_dispatcherID.Value, _dispatcherID.Value);
+                if (!ChannelServices.RegisteredChannels.Any(i => i == serverChannel)) {
+                    ChannelServices.RegisterChannel(serverChannel, false);
+                }
+            }
+
             // share object
             ObjRef QueueRef = RemotingServices.Marshal(message,
                 message.UriSuffix,
@@ -85,7 +93,7 @@ namespace SimpleIPCCommSystem {
             QueueRef.URI = new IPCUri(message.SenderID, message).Value; // TODO: get rid of this code?
 
             // notify receaver
-            IIPCGUID helperID = new IPCGUID(new Guid().ToString());
+            IIPCGUID helperID = new IPCGUID(message.GetHashCode());
             IPCSyncHelperMessage helperMessage = new IPCSyncHelperMessage(message, helperID);
             receaverQueue.EnqueueMessage(helperMessage);
             _receaverWaitHandle.Set();

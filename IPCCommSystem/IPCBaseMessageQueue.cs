@@ -17,10 +17,10 @@ namespace SimpleIPCCommSystem {
         public IIPCBaseMessage DequeueMessage() {
             IIPCBaseMessage tmpResult = tasks.Dequeue();
             if (tmpResult is IPCSyncHelperMessage) {
-                IPCSyncHelperMessage realMessageHelper = tmpResult as IPCSyncHelperMessage;
-                IIPCBaseMessage realMessage = (IIPCBaseMessage)Activator.GetObject(realMessageHelper.OwnerType,
-                    realMessageHelper.OwnerFullUri);
-                return realMessage;
+                    IPCSyncHelperMessage messageHelper = tmpResult as IPCSyncHelperMessage;
+                    IIPCBaseMessage realMessage = (IIPCBaseMessage)Activator.GetObject(messageHelper.OwnerType,
+                        messageHelper.OwnerFullUri);
+                    return realMessage;
             } else
                 return tmpResult;
 

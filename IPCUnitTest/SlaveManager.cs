@@ -9,21 +9,13 @@ namespace IPCUnitTest {
     /// </summary>
     public class SlaveManager : IDisposable {
 
-        private static SlaveManager _instance = null;
-        public static SlaveManager Instance() {
-            if (_instance == null) {
-                _instance = new SlaveManager();
-            }
-            return _instance;
-        }
-
         private Process slaveProc;
 
         private void OnProcessExit(object sender, EventArgs e) {
             Dispose();
         }
 
-        private SlaveManager() {
+        public SlaveManager() {
             // subscribe to be able kill and free resources before exit
             AppDomain.CurrentDomain.DomainUnload += OnProcessExit;
         }
@@ -48,7 +40,7 @@ namespace IPCUnitTest {
             if (!File.Exists(slaveStartInfo.FileName)) {
                 throw new Exception("Can't find the slave binaries!");
             }
-            
+
             //slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             //slaveStartInfo.CreateNoWindow = true;
 
@@ -57,7 +49,11 @@ namespace IPCUnitTest {
         }
 
         public void Dispose() {
-            slaveProc.Kill();
+            try {
+                slaveProc.Kill();
+            } catch (InvalidOperationException) {
+                // keep silence if process crashed   
+            }
             slaveProc.Dispose();
         }
     }

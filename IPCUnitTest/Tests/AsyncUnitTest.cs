@@ -7,7 +7,7 @@ using SharedMessages;
 using SimpleIPCCommSystem.Messages;
 using SimpleIPCCommSystem.Utilities;
 
-namespace IPCUnitTest {
+namespace IPCUnitTest.Tests {
     [TestClass]
     public class AsyncUnitTest {
         private bool responceReceaved = false;
@@ -20,21 +20,6 @@ namespace IPCUnitTest {
             ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
         }
 
-        [TestMethod]
-        public void DoTestSimpleAsyncMessage() {
-            IIPCGUID slaveReceaverGUID = new IPCGUID(SlaveManager.Instance().LaunchSlave());
-            // wait for slave is launched and ininialized;
-            // TODO: contimue after receaving message ???
-            Thread.CurrentThread.Join(3000);
-            TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
-            test.StrData = "Hi Slave!";
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
-            }
-            Thread.CurrentThread.Join(3000);
-            Assert.IsTrue(responceReceaved, "Slave keep silence =(");
-        }
-
         public void OnReceaveMessage(object sender, IIPCBaseMessage message) {
             TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
             if (testAsyncMessage != null) {
@@ -45,7 +30,20 @@ namespace IPCUnitTest {
             }
         }
 
-
-
+        [TestMethod]
+        public void SlaveSimpleAsyncMessage() {
+            using (SlaveManager currentSlaveManager = new SlaveManager()) {
+                IIPCGUID slaveReceaverGUID = new IPCGUID(currentSlaveManager.LaunchSlave());
+                // wait for slave is launched and ininialized
+                Thread.CurrentThread.Join(3000);
+                TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
+                test.StrData = "Hi Slave!";
+                using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
+                    Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
+                }
+                Thread.CurrentThread.Join(3000);
+                Assert.IsTrue(responceReceaved, "Slave keep silence =(");
+            }
+        }
     }
 }
