@@ -48,8 +48,9 @@ namespace IPCUnitTest {
             if (!File.Exists(slaveStartInfo.FileName)) {
                 throw new Exception("Can't find the slave binaries!");
             }
-            slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            slaveStartInfo.CreateNoWindow = true;
+            
+            //slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //slaveStartInfo.CreateNoWindow = true;
 
             slaveProc = Process.Start(slaveStartInfo);
             return slaveProc.Id;

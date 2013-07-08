@@ -16,22 +16,25 @@ namespace ICPTestSlave {
 
         public static void OnReceaveMessage(object sender, IIPCBaseMessage message) {
 
+            Console.WriteLine(String.Format("Receaved message of type - {0} from sender with id = {1}", message.MessageType, message.SenderID.Value));
             TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
             if (testAsyncMessage != null) {
-                // responce to master
+                Console.WriteLine("Preparing responce to the master...");
                 TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
                 test.StrData = SlaveResponces.TestAsyncResponceString;
+                Console.WriteLine("Forward responce to the master...");
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(testAsyncMessage.SenderID)) {
                     dispatcher.Dispatch(test);
+                    Console.WriteLine("Message has been forwarded succesfully!");
                 }
                 return;
             }
 
             TestSyncMessage testSyncMessage = message as TestSyncMessage;
             if (testSyncMessage != null) {
-                // responce to master - does not work now
+                Console.WriteLine("Emulation of some processing");
                 Thread.CurrentThread.Join(SlaveResponces.SyncMessageSlaveDelay);
-                testSyncMessage.StrOut = "testOut";
+                testSyncMessage.StrOut = SlaveResponces.TestSyncResponceString;
             }
         }
     }

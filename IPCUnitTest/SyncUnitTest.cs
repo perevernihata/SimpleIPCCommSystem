@@ -14,26 +14,22 @@ namespace IPCUnitTest {
     [TestClass]
     public class SyncUnitTest {
 
-        public SyncUnitTest() {
-        }
-
-        ~SyncUnitTest() {
-        }
-
         [TestMethod]
         public void DoTestSimpleSyncMessage() {
             IIPCGUID slaveReceaverGUID = new IPCGUID(SlaveManager.Instance().LaunchSlave());
             // wait for slave is launched and ininialized;
-            Thread.CurrentThread.Join(1000);
+            Thread.CurrentThread.Join(3000);
             TestSyncMessage test = new TestSyncMessage(new IPCGUID(), 0);
             test.StrIn = "Hi Slave!";
-            test.TimeOut = Int32.MaxValue; // !! //SlaveResponces.SyncMessageSlaveDelay + 2000;
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(test.SenderID)) {
-                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Time is up");
+            test.TimeOut = SlaveResponces.SyncMessageSlaveDelay + 2000;
+            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
+                IPCDispatchResult dispatchResult = dispatcher.Dispatch(test);
+                Assert.IsTrue(dispatchResult == IPCDispatchResult.Success, "Unable to send message error because of the reason {0}", dispatchResult);
             }
+            Assert.IsTrue(String.Equals(test.StrOut, SlaveResponces.TestSyncResponceString), "Time is up");
 
-            test.TimeOut = Int32.MaxValue;// SlaveResponces.SyncMessageSlaveDelay - 2000;
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(test.SenderID)) {
+            test.TimeOut = SlaveResponces.SyncMessageSlaveDelay - 2000;
+            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
                 Assert.IsTrue(dispatcher.Dispatch(test)
                     == IPCDispatchResult.Timeout, "Timeout is an expected result");
             }                    

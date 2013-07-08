@@ -80,7 +80,7 @@ namespace SimpleIPCCommSystem {
             // share object
             ObjRef QueueRef = RemotingServices.Marshal(message,
                 message.UriSuffix,
-                typeof(IPCBaseSyncMessage));
+                message.GetType());
 
             QueueRef.URI = new IPCUri(message.SenderID, message).Value; // TODO: get rid of this code?
 
