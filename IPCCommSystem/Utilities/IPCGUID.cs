@@ -28,5 +28,9 @@ namespace SimpleIPCCommSystem.Utilities {
         public IPCGUID(int guid) {
             value = prefix + guid.ToString();
         }
+
+        public bool Equals(IIPCGUID other) {
+            return String.Equals(other.Value, Value);
+        }
     }
 }
