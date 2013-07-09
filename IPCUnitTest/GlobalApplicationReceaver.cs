@@ -1,4 +1,4 @@
-﻿using SimpleIPCCommSystem;
+﻿using SimpleIPCCommSystem.Receavers;
 
 namespace IPCUnitTest {
     public class ReceaverHolder {

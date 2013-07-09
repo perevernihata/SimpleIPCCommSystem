@@ -1,6 +1,6 @@
 ﻿using System;
 using SimpleIPCCommSystem.Messages;
-using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem;
 
 namespace SharedMessages {
 

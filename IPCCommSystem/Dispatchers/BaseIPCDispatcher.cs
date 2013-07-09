@@ -5,11 +5,11 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
 using System.Runtime.Serialization;
-using SimpleIPCCommSystem.Resources;
 using SimpleIPCCommSystem.Messages;
 using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem.GUIDS;
 
-namespace SimpleIPCCommSystem {
+namespace SimpleIPCCommSystem.Dispatchers {
     public class BaseIPCDispatcher : IIPCBaseIPCDispatcher, IDisposable {
         IIPCGUID _receaverID;
         IIPCGUID _dispatcherID;
@@ -27,7 +27,7 @@ namespace SimpleIPCCommSystem {
                 _receaverID.Value);
 
             // create dispatcher wait handle
-            _dispatcherID = new IPCGUID();
+            _dispatcherID = new IPCDispatcherGUID();
             _dispatcherWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
                 _dispatcherID.Value);
             if (!ChannelServices.RegisteredChannels.Any(i => i == clientChannel)) {
@@ -37,12 +37,11 @@ namespace SimpleIPCCommSystem {
 
         public IPCDispatchResult Dispatch(IIPCBaseMessage message) {
 
-            string receaverUri =
-                String.Format(CommonResource.BaseUri, _receaverID.Value, IPCBaseMessagesQueue.URISuffix);
+            string receaverUri = new IPCUri(_receaverID, IPCBaseMessagesQueue.URISuffix).Value;
 
             _receaverQueue = (IPCBaseMessagesQueue)Activator.GetObject(typeof(IPCBaseMessagesQueue),
                 receaverUri);
-            message.SenderID = _dispatcherID;
+
             try {
                 if (RemotingServices.IsTransparentProxy(_receaverQueue)) {
                     switch (message.MessageType) {

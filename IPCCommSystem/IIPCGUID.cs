@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleIPCCommSystem.Utilities {
+namespace SimpleIPCCommSystem {
     public interface IIPCGUID : IEquatable<IIPCGUID> {
         string Value { get; }
     }

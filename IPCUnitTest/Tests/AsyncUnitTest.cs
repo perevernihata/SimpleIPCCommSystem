@@ -5,7 +5,8 @@ using ICPTestSlave;
 using System.Threading;
 using SharedMessages;
 using SimpleIPCCommSystem.Messages;
-using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem.Dispatchers;
+using SimpleIPCCommSystem.GUIDS;
 
 namespace IPCUnitTest.Tests {
     [TestClass]
@@ -40,33 +41,33 @@ namespace IPCUnitTest.Tests {
             }
         }
 
-        [TestMethod]
+        [Priority(1), Timeout(3630000), TestMethod]
+        public void SelfSimpleAsyncMessage() {
+            IIPCGUID receaverGUID = new IPCReceaverGUID();
+            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(receaverGUID)) {
+                TestAsyncMessage test = new TestAsyncMessage(receaverGUID);
+                test.StrData = messageData;
+                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
+            }
+            Thread.Sleep(3000);
+            Assert.IsTrue(messageDispatchedToCurrentReceaver, "Message was not dispathed to the current receaver");
+            Assert.IsTrue(messageNotCorrupted, "Message dispathed to the current receaver has been corrupted");
+        }
+
+        [Timeout(3630000), TestMethod]
         public void SlaveSimpleAsyncMessage() {
             using (SlaveManager currentSlaveManager = new SlaveManager()) {
-                IIPCGUID slaveReceaverGUID = new IPCGUID(currentSlaveManager.LaunchSlave());
+                IIPCGUID slaveReceaverGUID = new IPCReceaverGUID(currentSlaveManager.LaunchSlave());
                 // wait for slave is launched and ininialized
                 Thread.CurrentThread.Join(3000);
-                TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
-                test.StrData = "Hi Slave!";
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
+                    TestAsyncMessage test = new TestAsyncMessage(ReceaverHolder.GlobalApplicationReceaver.ReceaverID);
+                    test.StrData = "Hi Slave!";
                     Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
                 }
                 Thread.CurrentThread.Join(3000);
                 Assert.IsTrue(responceFromSlaveReceaved, "Slave keep silence =(");
             }
-        }
-
-        [TestMethod]
-        public void SelfSimpleAsyncMessage() {
-            TestAsyncMessage test = new TestAsyncMessage(new IPCGUID());
-            test.StrData = messageData;
-            using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(test.SenderID)) {
-                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
-            }
-
-            Thread.CurrentThread.Join(2000);
-            Assert.IsTrue(messageDispatchedToCurrentReceaver, "Message was not dispathed to the current receaver");
-            Assert.IsTrue(messageNotCorrupted, "Message dispathed to the current receaver has been corrupted");
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using SimpleIPCCommSystem.Utilities;
-using System.Runtime.Remoting.Lifetime;
 
 namespace SimpleIPCCommSystem.Messages {
 

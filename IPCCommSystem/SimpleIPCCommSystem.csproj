@@ -41,11 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseIPCDispatcher.cs" />
-    <Compile Include="BaseIPCReceaver.cs" />
+    <Compile Include="Dispatchers\BaseIPCDispatcher.cs" />
+    <Compile Include="Receavers\BaseIPCReceaver.cs" />
     <Compile Include="Utilities\IIPCSharedObject.cs" />
-    <Compile Include="Utilities\IIPCUri.cs" />
-    <Compile Include="Messages\IIPCBaseMessage.cs" />
+    <Compile Include="IIPCUri.cs" />
+    <Compile Include="IIPCBaseMessage.cs" />
     <Compile Include="Messages\IPCBaseAsyncMessage.cs" />
     <Compile Include="Messages\IPCBaseSyncMessage.cs" />
     <Compile Include="Messages\IPCSyncHelperMessage.cs" />
@@ -56,10 +56,12 @@
     </Compile>
     <Compile Include="IIPCBaseIPCDispatcher.cs" />
     <Compile Include="IIPCBaseReceaver.cs" />
-    <Compile Include="Utilities\IIPCGUID.cs" />
-    <Compile Include="Utilities\IPCGUID.cs" />
+    <Compile Include="IIPCGUID.cs" />
+    <Compile Include="GUIDS\IPCDispatcherGUID.cs" />
+    <Compile Include="GUIDS\IPCGUID.cs" />
     <Compile Include="IPCBaseMessageQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GUIDS\IPCReceaverGUID.cs" />
     <Compile Include="Utilities\IPCUri.cs" />
   </ItemGroup>
   <ItemGroup>

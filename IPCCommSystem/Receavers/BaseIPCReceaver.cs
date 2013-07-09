@@ -8,10 +8,11 @@ using System.Runtime.Remoting.Channels;
 using SimpleIPCCommSystem.Resources;
 using SimpleIPCCommSystem.Messages;
 using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem.GUIDS;
 
-namespace SimpleIPCCommSystem {
+namespace SimpleIPCCommSystem.Receavers {
     public class BaseIPCReceaver : IIPCBaseReceaver, IDisposable {
-        private IPCGUID _ownGUID;
+        private IIPCGUID _ownGUID;
         private Thread _worker;
         private object _locker = new object();
         private EventWaitHandle _currentWaitHandle;
@@ -19,7 +20,7 @@ namespace SimpleIPCCommSystem {
         private IpcServerChannel channel;
 
         public BaseIPCReceaver() {
-            _ownGUID = new IPCGUID(Process.GetCurrentProcess().Id);
+            _ownGUID = new IPCReceaverGUID();
             _currentWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
                  _ownGUID.Value);
             _currentQueue = DoCreateQueue();
@@ -44,7 +45,6 @@ namespace SimpleIPCCommSystem {
         private void ListenQueue() {
             while (true) {
                 IIPCBaseMessage message = null;
-
                     lock (_locker) {
                         if (_currentQueue.Count() > 0) {
                             message = _currentQueue.DequeueMessage();
@@ -65,7 +65,7 @@ namespace SimpleIPCCommSystem {
             }
         }
 
-        protected virtual IPCGUID DoGetReceaverID() {
+        protected virtual IIPCGUID DoGetReceaverID() {
             return _ownGUID;
         }
 

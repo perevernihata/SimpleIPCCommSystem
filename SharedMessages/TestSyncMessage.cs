@@ -1,5 +1,5 @@
 ﻿using SimpleIPCCommSystem.Messages;
-using SimpleIPCCommSystem.Utilities;
+using SimpleIPCCommSystem;
 
 namespace SharedMessages {
     /// <summary>

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCTestMaster", "IPCUnitTes
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60C1DBA8-7274-472A-9E50-A9BACD355316}"
+	ProjectSection(SolutionItems) = preProject
+		IPCTestApplication.vsmdi = IPCTestApplication.vsmdi
+		IPCTestConfig.testsettings = IPCTestConfig.testsettings
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICPTestSlave", "ICPTestSlave\ICPTestSlave.csproj", "{1ABD4B63-1008-4EC6-A6EE-1537EACD9E8F}"
 	ProjectSection(ProjectDependencies) = postProject
