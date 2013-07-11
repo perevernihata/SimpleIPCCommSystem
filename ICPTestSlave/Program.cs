@@ -36,6 +36,7 @@ namespace ICPTestSlave {
                 Console.WriteLine("Emulation of some processing");
                 Thread.CurrentThread.Join(SlaveResponces.SyncMessageSlaveDelay);
                 testSyncMessage.StrOut = SlaveResponces.TestSyncResponceString;
+                Console.WriteLine("Continue work....");
             }
         }
     }

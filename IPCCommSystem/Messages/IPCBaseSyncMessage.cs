@@ -4,7 +4,7 @@ namespace SimpleIPCCommSystem.Messages {
 
     public class IPCBaseSyncMessage : MarshalByRefObject, IIPCBaseMessage, IIPCSharedObject {
 
-        public IPCBaseSyncMessage(IIPCGUID senderID,
+        public IPCBaseSyncMessage(IIPCGUID senderID, 
             int timeout) {
             _senderID = senderID;
             _timeout = timeout;
@@ -38,6 +38,17 @@ namespace SimpleIPCCommSystem.Messages {
         public override object InitializeLifetimeService() {
             // force leave proxy object alive
             return null;
+        }
+
+
+        private IIPCGUID _dispatherID;
+        public IIPCGUID DispatherID {
+            get {
+                return _dispatherID;
+            }
+            set {
+                _dispatherID = value;
+            }
         }
     }
 

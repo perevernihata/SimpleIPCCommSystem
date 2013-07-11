@@ -34,17 +34,16 @@ namespace SimpleIPCCommSystem.Receavers {
                 }
             }
 
-            ObjRef QueueRef = RemotingServices.Marshal(_currentQueue,
+            RemotingServices.Marshal(_currentQueue,
                 _currentQueue.UriSuffix,
                 typeof(IPCBaseMessagesQueue));
-            QueueRef.URI = new IPCUri(_ownGUID, _currentQueue).Value; // TODO: get rid of this code?
             _worker = new Thread(ListenQueue);
             _worker.Start();
         }
 
         private void ListenQueue() {
-            while (true) {
-                IIPCBaseMessage message = null;
+                while (true) {
+                    IIPCBaseMessage message = null;
                     lock (_locker) {
                         if (_currentQueue.Count() > 0) {
                             message = _currentQueue.DequeueMessage();
@@ -52,17 +51,17 @@ namespace SimpleIPCCommSystem.Receavers {
                     }
                     if (message != null) {
                         if (message.MessageType == IPCDispatchType.Sync) {
-                            using (EventWaitHandle _receaverWaitHandle =
-                                new EventWaitHandle(false, EventResetMode.AutoReset, message.SenderID.Value)) {
+                            using (EventWaitHandle _dispatcherWaitHandle =
+                                new EventWaitHandle(false, EventResetMode.AutoReset, message.DispatherID.Value)) {
                                 OnReceaveIPCMessage(this, message);
-                                _receaverWaitHandle.Set();
+                                _dispatcherWaitHandle.Set();
                             };
                         } else {
                             OnReceaveIPCMessage(this, message);
                         }
                     } else
                         _currentWaitHandle.WaitOne();
-            }
+                }
         }
 
         protected virtual IIPCGUID DoGetReceaverID() {
@@ -81,6 +80,7 @@ namespace SimpleIPCCommSystem.Receavers {
         public void Dispose() {
             _worker.Join();
             _currentWaitHandle.Close();
+            RemotingServices.Disconnect(_currentQueue);
         }
 
         public event ReceaveIPCMessageEventHandler OnReceaveIPCMessage;

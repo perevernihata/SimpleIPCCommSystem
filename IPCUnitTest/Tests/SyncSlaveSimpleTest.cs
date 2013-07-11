@@ -9,7 +9,7 @@ using SimpleIPCCommSystem.Dispatchers;
 
 namespace IPCUnitTest.Tests {
     [TestClass]
-    public class SyncUnitTest {
+    public class SyncSlaveSimpleTest {
 
         [Timeout(3630000), TestMethod]
         public void SlaveSimpleSyncMessage() {
@@ -18,7 +18,7 @@ namespace IPCUnitTest.Tests {
                 // wait for slave is launched and ininialized;
                 Thread.CurrentThread.Join(3000);
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                    TestSyncMessage test = new TestSyncMessage(new IPCGUID(), 0);
+                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver, 0);
                     test.StrIn = "Hi Slave!";
                     test.TimeOut = SlaveResponces.SyncMessageSlaveDelay + 2000;
                     IPCDispatchResult dispatchResult = dispatcher.Dispatch(test);
@@ -27,14 +27,14 @@ namespace IPCUnitTest.Tests {
                 }
 
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                    TestSyncMessage test = new TestSyncMessage(new IPCGUID(), 0);
+                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver, 0);
                     test.StrIn = "Hi Slave!";
                     test.TimeOut = SlaveResponces.SyncMessageSlaveDelay - 2000;
-                    Assert.IsTrue(dispatcher.Dispatch(test)
-                        == IPCDispatchResult.Timeout, "Timeout is an expected result");
+                    IPCDispatchResult dispatchResult = dispatcher.Dispatch(test);
+                    Assert.IsTrue(dispatchResult
+                        == IPCDispatchResult.Timeout, "Timeout is an expected but {0} is dispatch result", dispatchResult);
                 }
             }
         }
-
     }
 }

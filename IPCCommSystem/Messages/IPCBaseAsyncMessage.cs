@@ -18,5 +18,16 @@ namespace SimpleIPCCommSystem.Messages {
         public IPCDispatchType MessageType {
             get { return IPCDispatchType.Async; }
         }
+
+
+        private IIPCGUID _dispatherID;
+        public IIPCGUID DispatherID {
+            get {
+                return _dispatherID;
+            }
+            set {
+                _dispatherID = value;
+            }
+        }
     }
 }

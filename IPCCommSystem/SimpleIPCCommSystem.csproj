@@ -54,7 +54,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommonResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="IIPCBaseIPCDispatcher.cs" />
+    <Compile Include="IIPCDispatcher.cs" />
     <Compile Include="IIPCBaseReceaver.cs" />
     <Compile Include="IIPCGUID.cs" />
     <Compile Include="GUIDS\IPCDispatcherGUID.cs" />

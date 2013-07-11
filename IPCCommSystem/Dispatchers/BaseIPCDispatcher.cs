@@ -10,7 +10,7 @@ using SimpleIPCCommSystem.Utilities;
 using SimpleIPCCommSystem.GUIDS;
 
 namespace SimpleIPCCommSystem.Dispatchers {
-    public class BaseIPCDispatcher : IIPCBaseIPCDispatcher, IDisposable {
+    public class BaseIPCDispatcher : IIPCDispatcher, IDisposable {
         IIPCGUID _receaverID;
         IIPCGUID _dispatcherID;
         private EventWaitHandle _receaverWaitHandle;
@@ -85,21 +85,22 @@ namespace SimpleIPCCommSystem.Dispatchers {
             }
 
             // share object
-            ObjRef QueueRef = RemotingServices.Marshal(message,
+            RemotingServices.Marshal(message,
                 message.UriSuffix,
                 message.GetType());
-
-            QueueRef.URI = new IPCUri(message.SenderID, message).Value; // TODO: get rid of this code?
-
-            // notify receaver
-            IIPCGUID helperID = new IPCGUID(message.GetHashCode());
-            IPCSyncHelperMessage helperMessage = new IPCSyncHelperMessage(message, helperID);
-            receaverQueue.EnqueueMessage(helperMessage);
-            _receaverWaitHandle.Set();
-
-            if (!_dispatcherWaitHandle.WaitOne(message.TimeOut))
-                return IPCDispatchResult.Timeout;
-
+            try {
+                // notify receaver
+                IIPCGUID helperID = new IPCGUID(message.GetHashCode());
+                IPCSyncHelperMessage helperMessage = new IPCSyncHelperMessage(new IPCUri(_dispatcherID, message).Value, message.GetType(), helperID);
+                helperMessage.DispatherID = _dispatcherID;
+                message.DispatherID = _dispatcherID;
+                receaverQueue.EnqueueMessage(helperMessage);
+                _receaverWaitHandle.Set();
+                if (!_dispatcherWaitHandle.WaitOne(message.TimeOut))
+                    return IPCDispatchResult.Timeout;
+            } finally {
+                RemotingServices.Disconnect(message);
+            }
             return IPCDispatchResult.Success;
         }
 

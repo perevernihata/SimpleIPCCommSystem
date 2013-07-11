@@ -73,9 +73,10 @@
     </Compile>
     <Compile Include="GlobalApplicationReceaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\AsyncUnitTest.cs" />
+    <Compile Include="Tests\AsyncSlaveSimpleTest.cs" />
     <Compile Include="SlaveManager.cs" />
-    <Compile Include="Tests\SyncUnitTest.cs" />
+    <Compile Include="Tests\SelfSimpleTest.cs" />
+    <Compile Include="Tests\SyncSlaveSimpleTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

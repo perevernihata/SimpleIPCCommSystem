@@ -13,11 +13,11 @@ namespace SimpleIPCCommSystem.Messages {
         public string OwnerFullUri { get; private set; }
         public Type OwnerType { get; private set; }
 
-        public IPCSyncHelperMessage(IPCBaseSyncMessage owner, IIPCGUID id)
+        public IPCSyncHelperMessage(string ownerFullUri, Type ownerType, IIPCGUID id)
             : base(id) {
-            RealMessageID = owner.SenderID;
-            OwnerType = owner.GetType();
-            OwnerFullUri = new IPCUri(owner.SenderID, owner).Value;
+            RealMessageID = id;
+            OwnerType = ownerType;
+            OwnerFullUri = ownerFullUri;
         }
     }
 
