@@ -33,7 +33,7 @@ namespace IPCUnitTest.Tests {
 
 
         [Timeout(3630000), TestMethod]
-        public void SlaveSimpleAsyncMessage() {
+        public void DoAsyncSlaveSimpleTest() {
             using (SlaveManager currentSlaveManager = new SlaveManager()) {
                 IIPCGUID slaveReceaverGUID = new IPCReceaverGUID(currentSlaveManager.LaunchSlave());
                 // wait for slave is launched and ininialized

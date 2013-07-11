@@ -4,6 +4,8 @@ namespace SimpleIPCCommSystem.Messages {
 
     public class IPCBaseSyncMessage : MarshalByRefObject, IIPCBaseMessage, IIPCSharedObject {
 
+        public const int InfiniteTimeout = -1;
+
         public IPCBaseSyncMessage(IIPCGUID senderID, 
             int timeout) {
             _senderID = senderID;

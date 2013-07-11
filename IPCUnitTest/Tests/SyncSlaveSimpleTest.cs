@@ -6,19 +6,20 @@ using System.Threading;
 using ICPTestSlave;
 using SimpleIPCCommSystem.GUIDS;
 using SimpleIPCCommSystem.Dispatchers;
+using SimpleIPCCommSystem.Messages;
 
 namespace IPCUnitTest.Tests {
     [TestClass]
     public class SyncSlaveSimpleTest {
 
         [Timeout(3630000), TestMethod]
-        public void SlaveSimpleSyncMessage() {
+        public void DoSyncSlaveSimpleTest() {
             using (SlaveManager currentSlaveManager = new SlaveManager()) {
                 IIPCGUID slaveReceaverGUID = new IPCReceaverGUID(currentSlaveManager.LaunchSlave());
                 // wait for slave is launched and ininialized;
                 Thread.CurrentThread.Join(3000);
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver, 0);
+                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver);
                     test.StrIn = "Hi Slave!";
                     test.TimeOut = SlaveResponces.SyncMessageSlaveDelay + 2000;
                     IPCDispatchResult dispatchResult = dispatcher.Dispatch(test);
@@ -27,7 +28,7 @@ namespace IPCUnitTest.Tests {
                 }
 
                 using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(slaveReceaverGUID)) {
-                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver, 0);
+                    TestSyncMessage test = new TestSyncMessage(dispatcher.Receaver);
                     test.StrIn = "Hi Slave!";
                     test.TimeOut = SlaveResponces.SyncMessageSlaveDelay - 2000;
                     IPCDispatchResult dispatchResult = dispatcher.Dispatch(test);

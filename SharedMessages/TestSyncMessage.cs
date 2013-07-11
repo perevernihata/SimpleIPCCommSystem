@@ -11,7 +11,7 @@ namespace SharedMessages {
         public string StrOut { get; set; }
 
         public TestSyncMessage(IIPCGUID senderID,
-            int timeout)
+            int timeout = IPCBaseSyncMessage.InfiniteTimeout)
             : base(senderID, timeout) {
         }
 

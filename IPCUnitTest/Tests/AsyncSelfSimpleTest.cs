@@ -9,7 +9,7 @@ using System;
 
 namespace IPCUnitTest.Tests {
     [TestClass]
-    public class SelfSimpleTest {
+    public class AsyncSelfSimpleTest {
 
         private bool messageDispatchedToCurrentReceaver = false;
         private string messageData = "some important things";
@@ -25,24 +25,24 @@ namespace IPCUnitTest.Tests {
             }
         }
 
-        public SelfSimpleTest() {
+        public AsyncSelfSimpleTest() {
             ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage += OnReceaveMessage;
         }
 
-        ~SelfSimpleTest() {
+        ~AsyncSelfSimpleTest() {
             ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
         }
 
 
         [Timeout(3630000), TestMethod]
-        public void SelfSimpleAsyncMessage() {
+        public void DoAsyncSelfSimpleTest() {
             IIPCGUID receaverGUID = new IPCReceaverGUID();
             using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(receaverGUID)) {
                 TestAsyncMessage test = new TestAsyncMessage(receaverGUID);
                 test.StrData = messageData;
                 Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.Success, "Unable to send message");
             }
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             Assert.IsTrue(messageDispatchedToCurrentReceaver, "Message was not dispathed to the current receaver");
             Assert.IsTrue(messageNotCorrupted, "Message dispathed to the current receaver has been corrupted");
         }
