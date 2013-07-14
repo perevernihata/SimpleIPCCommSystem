@@ -55,7 +55,7 @@ namespace SimpleIPCCommSystem.Dispatchers {
                 }
             } catch (Exception ex) {
                 if (ex is RemotingException || ex is SerializationException) {
-                    return IPCDispatchResult.Fail;
+                    return IPCDispatchResult.UnexpectedFail;
                 }
                 throw;
             }
@@ -64,7 +64,7 @@ namespace SimpleIPCCommSystem.Dispatchers {
 
         protected IPCDispatchResult DoDispatchAsyncMessage(IPCBaseAsyncMessage message, IPCBaseMessagesQueue receaverQueue) {
             if (message == null || receaverQueue == null) {
-                return IPCDispatchResult.Fail;
+                return IPCDispatchResult.UnexpectedFail;
             }
             _receaverQueue.EnqueueMessage(message);
             _receaverWaitHandle.Set();
@@ -73,7 +73,7 @@ namespace SimpleIPCCommSystem.Dispatchers {
 
         protected IPCDispatchResult DoDispatchSyncMessage(IPCBaseSyncMessage message, IPCBaseMessagesQueue receaverQueue) {
             if (message == null || receaverQueue == null) {
-                return IPCDispatchResult.Fail;
+                return IPCDispatchResult.UnexpectedFail;
             }
 
             // ensure that IPC server is alive

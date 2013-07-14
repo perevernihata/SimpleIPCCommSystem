@@ -73,9 +73,11 @@
     </Compile>
     <Compile Include="GlobalApplicationReceaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\AsyncComplexSlaveTest.cs" />
     <Compile Include="Tests\AsyncSlaveSimpleTest.cs" />
     <Compile Include="SlaveManager.cs" />
     <Compile Include="Tests\AsyncSelfSimpleTest.cs" />
+    <Compile Include="Tests\ReceaverNotExistsTest.cs" />
     <Compile Include="Tests\SyncSlaveSimpleTest.cs" />
     <Compile Include="Tests\SyncSelfSimpleTest.cs" />
   </ItemGroup>
