@@ -14,10 +14,10 @@ namespace IPCUnitTest.Tests {
         private string TestMessageIn = "TestMessageIn";
         private string TestMessageOut = "TestMessageOut";
 
-        public void OnReceaveMessage(object sender, IIPCBaseMessage message) {
+        public void OnReceaveMessage(object sender, IIPCMessage message) {
 
             TestSyncMessage testSyncMessage = message as TestSyncMessage;
-            IIPCBaseReceaver currentReceaver = sender as IIPCBaseReceaver;
+            IIPCReceaver currentReceaver = sender as IIPCReceaver;
             if (currentReceaver != null && testSyncMessage != null) {
                 Assert.IsTrue(currentReceaver.ReceaverID.Equals(testSyncMessage.SenderID), "Message receaved from wrong receaver");
                 Assert.IsTrue(TestMessageIn.Equals(testSyncMessage.StrIn), "Message is corrupted");
@@ -28,11 +28,6 @@ namespace IPCUnitTest.Tests {
         public SyncSelfSimpleTest() {
             ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage += OnReceaveMessage;
         }
-
-        ~SyncSelfSimpleTest() {
-            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
-        }
-
 
         [Timeout(3630000), TestMethod]
         public void DoSyncSelfSimpleTest() {

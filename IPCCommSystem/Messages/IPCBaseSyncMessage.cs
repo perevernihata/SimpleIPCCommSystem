@@ -2,7 +2,7 @@
 
 namespace SimpleIPCCommSystem.Messages {
 
-    public class IPCBaseSyncMessage : MarshalByRefObject, IIPCBaseMessage, IIPCSharedObject {
+    public class IPCBaseSyncMessage : MarshalByRefObject, IIPCMessage, IIPCSharedObject {
 
         public const int InfiniteTimeout = -1;
 
@@ -51,6 +51,11 @@ namespace SimpleIPCCommSystem.Messages {
             set {
                 _dispatherID = value;
             }
+        }
+
+        public bool IsValid {
+            // TODO: make sure that we can verify whether this message valid on base level
+            get { return true; } 
         }
     }
 

@@ -11,7 +11,7 @@ using SimpleIPCCommSystem.Utilities;
 using SimpleIPCCommSystem.GUIDS;
 
 namespace SimpleIPCCommSystem.Receavers {
-    public class BaseIPCReceaver : IIPCBaseReceaver, IDisposable {
+    public class BaseIPCReceaver : IIPCReceaver, IDisposable {
         private IIPCGUID _ownGUID;
         private Thread _worker;
         private object _locker = new object();
@@ -43,7 +43,7 @@ namespace SimpleIPCCommSystem.Receavers {
 
         private void ListenQueue() {
                 while (true) {
-                    IIPCBaseMessage message = null;
+                    IIPCMessage message = null;
                     lock (_locker) {
                         if (_currentQueue.Count() > 0) {
                             message = _currentQueue.DequeueMessage();
@@ -68,7 +68,7 @@ namespace SimpleIPCCommSystem.Receavers {
             return _ownGUID;
         }
 
-        protected virtual IPCBaseMessagesQueue DoCreateQueue() {
+        internal virtual IPCBaseMessagesQueue DoCreateQueue() {
             return new IPCBaseMessagesQueue();
         }
 

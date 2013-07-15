@@ -59,6 +59,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -76,7 +77,7 @@
     <Compile Include="Tests\AsyncComplexSlaveTest.cs" />
     <Compile Include="Tests\AsyncSlaveSimpleTest.cs" />
     <Compile Include="SlaveManager.cs" />
-    <Compile Include="Tests\AsyncSelfSimpleTest.cs" />
+    <Compile Include="Tests\InvalidMessageTest.cs" />
     <Compile Include="Tests\ReceaverNotExistsTest.cs" />
     <Compile Include="Tests\SyncSlaveSimpleTest.cs" />
     <Compile Include="Tests\SyncSelfSimpleTest.cs" />

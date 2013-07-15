@@ -40,9 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestAsyncComplexMessage.cs" />
     <Compile Include="ComplexSharedClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAsyncMessage.cs" />
+    <Compile Include="TestInvalidMessage.cs" />
     <Compile Include="TestSyncMessage.cs" />
   </ItemGroup>
   <ItemGroup>

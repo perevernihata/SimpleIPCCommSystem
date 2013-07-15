@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\IPCCommSystem.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,7 +48,7 @@
     <Compile Include="Receavers\BaseIPCReceaver.cs" />
     <Compile Include="Utilities\IIPCSharedObject.cs" />
     <Compile Include="IIPCUri.cs" />
-    <Compile Include="IIPCBaseMessage.cs" />
+    <Compile Include="IIPCMessage.cs" />
     <Compile Include="Messages\IPCBaseAsyncMessage.cs" />
     <Compile Include="Messages\IPCBaseSyncMessage.cs" />
     <Compile Include="Messages\IPCSyncHelperMessage.cs" />
@@ -55,7 +58,7 @@
       <DependentUpon>CommonResource.resx</DependentUpon>
     </Compile>
     <Compile Include="IIPCDispatcher.cs" />
-    <Compile Include="IIPCBaseReceaver.cs" />
+    <Compile Include="IIPCReceaver.cs" />
     <Compile Include="IIPCGUID.cs" />
     <Compile Include="GUIDS\IPCDispatcherGUID.cs" />
     <Compile Include="GUIDS\IPCGUID.cs" />

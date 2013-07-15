@@ -13,7 +13,7 @@ namespace IPCUnitTest.Tests {
     public class AsyncSlaveSimpleTest {
         private bool responceFromSlaveReceaved = false;
 
-        public void OnReceaveMessage(object sender, IIPCBaseMessage message) {
+        private void OnReceaveMessage(object sender, IIPCMessage message) {
             TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
             if (testAsyncMessage != null) {
                 responceFromSlaveReceaved = true;
@@ -26,11 +26,6 @@ namespace IPCUnitTest.Tests {
         public AsyncSlaveSimpleTest() {
             ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage += OnReceaveMessage;
         }
-
-        ~AsyncSlaveSimpleTest() {
-            ReceaverHolder.GlobalApplicationReceaver.OnReceaveIPCMessage -= OnReceaveMessage;
-        }
-
 
         [Timeout(3630000), TestMethod]
         public void DoAsyncSlaveSimpleTest() {

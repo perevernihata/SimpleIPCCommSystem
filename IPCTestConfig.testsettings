@@ -3,7 +3,7 @@
   <Description>Это - параметры по умолчанию для локального тестового запуска.</Description>
   <Deployment enabled="false" />
   <Execution>
-    <Timeouts runTimeout="19800000" testTimeout="19800000" />
+    <Timeouts testTimeout="0" />
     <TestTypeSpecific>
       <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
         <AssemblyResolution>

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using SimpleIPCCommSystem.Messages;
 
 namespace SimpleIPCCommSystem {
-    public class IPCBaseMessagesQueue : MarshalByRefObject, IIPCSharedObject {
+    internal class IPCBaseMessagesQueue : MarshalByRefObject, IIPCSharedObject {
         public static string URISuffix = "IPCMessagesQueueSuffix";
 
-        Queue<IIPCBaseMessage> tasks = new Queue<IIPCBaseMessage>();
+        Queue<IIPCMessage> tasks = new Queue<IIPCMessage>();
         public IPCBaseMessagesQueue() {
         }
 
-        public void EnqueueMessage(IIPCBaseMessage message) {
+        public void EnqueueMessage(IIPCMessage message) {
             tasks.Enqueue(message);
         }
 
-        public IIPCBaseMessage DequeueMessage() {
-            IIPCBaseMessage tmpResult = tasks.Dequeue();
+        public IIPCMessage DequeueMessage() {
+            IIPCMessage tmpResult = tasks.Dequeue();
             if (tmpResult is IPCSyncHelperMessage) {
                     IPCSyncHelperMessage messageHelper = tmpResult as IPCSyncHelperMessage;
-                    IIPCBaseMessage realMessage = (IIPCBaseMessage)Activator.GetObject(messageHelper.OwnerType,
+                    IIPCMessage realMessage = (IIPCMessage)Activator.GetObject(messageHelper.OwnerType,
                         messageHelper.OwnerFullUri);
                     return realMessage;
             } else

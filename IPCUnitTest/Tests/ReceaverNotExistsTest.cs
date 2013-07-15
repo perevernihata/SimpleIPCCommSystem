@@ -15,7 +15,8 @@ namespace IPCUnitTest.Tests {
             IIPCGUID receaverGUID = new IPCReceaverGUID(NonExistentPID);
             using (BaseIPCDispatcher dispatcher = new BaseIPCDispatcher(receaverGUID)) {
                 TestAsyncMessage test = new TestAsyncMessage(receaverGUID);
-                Assert.IsTrue(dispatcher.Dispatch(test) == IPCDispatchResult.UnexpectedFail, "Receaver not exists but message was sent");
+                IPCDispatchResult tmpResult = dispatcher.Dispatch(test);
+                Assert.IsTrue(tmpResult == IPCDispatchResult.ReceaverNotExists, "Receaver not exists but dispatch result is {0}", tmpResult);
             }
         }
     }

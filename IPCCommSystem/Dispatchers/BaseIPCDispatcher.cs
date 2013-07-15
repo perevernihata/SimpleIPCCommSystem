@@ -25,7 +25,6 @@ namespace SimpleIPCCommSystem.Dispatchers {
             _receaverID = receaverID;
             _receaverWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
                 _receaverID.Value);
-
             // create dispatcher wait handle
             _dispatcherID = new IPCDispatcherGUID();
             _dispatcherWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset,
@@ -35,12 +34,17 @@ namespace SimpleIPCCommSystem.Dispatchers {
             }
         }
 
-        public IPCDispatchResult Dispatch(IIPCBaseMessage message) {
+        public IPCDispatchResult Dispatch(IIPCMessage message) {
 
             string receaverUri = new IPCUri(_receaverID, IPCBaseMessagesQueue.URISuffix).Value;
 
             _receaverQueue = (IPCBaseMessagesQueue)Activator.GetObject(typeof(IPCBaseMessagesQueue),
                 receaverUri);
+
+            // check if message is valid
+            if (message == null || !message.IsValid) {
+                return IPCDispatchResult.InvalidMessageClass;
+            }
 
             try {
                 if (RemotingServices.IsTransparentProxy(_receaverQueue)) {
@@ -54,28 +58,24 @@ namespace SimpleIPCCommSystem.Dispatchers {
                     }
                 }
             } catch (Exception ex) {
-                if (ex is RemotingException || ex is SerializationException) {
-                    return IPCDispatchResult.UnexpectedFail;
+                if (ex is RemotingException) {
+                    return IPCDispatchResult.ReceaverNotExists;
                 }
-                throw;
+                if (ex is SerializationException) {
+                    return IPCDispatchResult.InvalidMessageClass;
+                }
+                return IPCDispatchResult.UnexpectedFail;
             }
             return IPCDispatchResult.Success;
         }
 
-        protected IPCDispatchResult DoDispatchAsyncMessage(IPCBaseAsyncMessage message, IPCBaseMessagesQueue receaverQueue) {
-            if (message == null || receaverQueue == null) {
-                return IPCDispatchResult.UnexpectedFail;
-            }
+        internal virtual IPCDispatchResult DoDispatchAsyncMessage(IPCBaseAsyncMessage message, IPCBaseMessagesQueue receaverQueue) {
             _receaverQueue.EnqueueMessage(message);
             _receaverWaitHandle.Set();
             return IPCDispatchResult.Success;
         }
 
-        protected IPCDispatchResult DoDispatchSyncMessage(IPCBaseSyncMessage message, IPCBaseMessagesQueue receaverQueue) {
-            if (message == null || receaverQueue == null) {
-                return IPCDispatchResult.UnexpectedFail;
-            }
-
+        internal virtual IPCDispatchResult DoDispatchSyncMessage(IPCBaseSyncMessage message, IPCBaseMessagesQueue receaverQueue) {
             // ensure that IPC server is alive
             if (!ChannelServices.RegisteredChannels.Any(i => i.ChannelName == _dispatcherID.Value)) {
                 serverChannel = new IpcServerChannel(_dispatcherID.Value, _dispatcherID.Value);
