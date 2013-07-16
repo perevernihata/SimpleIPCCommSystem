@@ -3,10 +3,7 @@ using System.Diagnostics;
 using System.IO;
 
 namespace IPCUnitTest {
-
-    /// <summary>
-    /// 
-    /// </summary>
+    
     public class SlaveManager : IDisposable {
 
         private Process slaveProc;

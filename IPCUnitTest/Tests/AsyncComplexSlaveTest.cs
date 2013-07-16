@@ -13,6 +13,7 @@ namespace IPCUnitTest.Tests {
     public class AsyncComplexSlaveTest {
         private bool responceFromSlaveReceaved = false;
         private void OnReceaveMessage(object sender, IIPCMessage message) {
+            
             TestAsyncComplexMessage testAsyncMessage = message as TestAsyncComplexMessage;
             if (testAsyncMessage != null) {
                 responceFromSlaveReceaved = true;

@@ -33,10 +33,6 @@ namespace SimpleIPCCommSystem.Messages {
             get { return "BaseSyncMessageSuffix"; }
         }
 
-        public Type GetRealMessageType() {
-            return this.GetType(); 
-        }
-
         public override object InitializeLifetimeService() {
             // force leave proxy object alive
             return null;
