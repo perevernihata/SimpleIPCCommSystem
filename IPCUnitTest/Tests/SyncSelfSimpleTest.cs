@@ -14,9 +14,9 @@ namespace IPCUnitTest.Tests {
         private string TestMessageIn = "TestMessageIn";
         private string TestMessageOut = "TestMessageOut";
 
-        public void OnReceaveMessage(object sender, IIPCMessage message) {
+        public void OnReceaveMessage(object sender, ReceaveMessageEventArgs e) {
 
-            TestSyncMessage testSyncMessage = message as TestSyncMessage;
+            TestSyncMessage testSyncMessage = e.Message as TestSyncMessage;
             IIPCReceaver currentReceaver = sender as IIPCReceaver;
             if (currentReceaver != null && testSyncMessage != null) {
                 Assert.IsTrue(currentReceaver.ReceaverID.Equals(testSyncMessage.SenderID), "Message receaved from wrong receaver");

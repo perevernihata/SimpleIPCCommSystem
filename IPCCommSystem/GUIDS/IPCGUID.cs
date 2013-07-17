@@ -8,13 +8,13 @@ namespace SimpleIPCCommSystem.GUIDS {
 
         public static IPCGUID Uncpecifyed = new IPCGUID("unspecifyed");
         
-        protected string value;
 
         protected virtual string GetPrefix()
         {
             return "IPCSimpleCommSystem";
         }
 
+        private string value;
         public string Value {
             get {
                 return value;

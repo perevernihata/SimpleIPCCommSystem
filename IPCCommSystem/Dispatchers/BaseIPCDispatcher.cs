@@ -20,6 +20,8 @@ namespace SimpleIPCCommSystem.Dispatchers {
         private static IpcClientChannel clientChannel = new IpcClientChannel();
         private static IpcServerChannel serverChannel;
 
+        private bool isDisposed = false;
+        
         public BaseIPCDispatcher(IIPCGUID receaverID) {
             // create receaver wait handle
             _receaverID = receaverID;
@@ -32,6 +34,10 @@ namespace SimpleIPCCommSystem.Dispatchers {
             if (!ChannelServices.RegisteredChannels.Any(i => i == clientChannel)) {
                 ChannelServices.RegisterChannel(clientChannel, true);
             }
+        }
+
+        ~BaseIPCDispatcher() {
+            Dispose(false);
         }
 
         public IPCDispatchResult Dispatch(IIPCMessage message) {
@@ -109,9 +115,17 @@ namespace SimpleIPCCommSystem.Dispatchers {
             get { return _receaverID; }
         }
 
+        private void Dispose(bool disposing) {
+            if (!isDisposed) {
+                _receaverWaitHandle.Dispose();
+                _dispatcherWaitHandle.Dispose();
+                isDisposed = true;
+            }
+        }
+
         public void Dispose() {
-            _receaverWaitHandle.Dispose();
-            _dispatcherWaitHandle.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

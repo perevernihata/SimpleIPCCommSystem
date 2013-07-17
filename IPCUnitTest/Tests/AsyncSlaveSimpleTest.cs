@@ -13,8 +13,8 @@ namespace IPCUnitTest.Tests {
     public class AsyncSlaveSimpleTest {
         private bool responceFromSlaveReceaved = false;
 
-        private void OnReceaveMessage(object sender, IIPCMessage message) {
-            TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
+        private void OnReceaveMessage(object sender, ReceaveMessageEventArgs e) {
+            TestAsyncMessage testAsyncMessage = e.Message as TestAsyncMessage;
             if (testAsyncMessage != null) {
                 responceFromSlaveReceaved = true;
                 // responce to master                

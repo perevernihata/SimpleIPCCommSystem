@@ -6,7 +6,7 @@ namespace SimpleIPCCommSystem {
     internal class IPCBaseMessagesQueue : MarshalByRefObject, IIPCSharedObject {
         public static string URISuffix = "IPCMessagesQueueSuffix";
 
-        Queue<IIPCMessage> tasks = new Queue<IIPCMessage>();
+        private Queue<IIPCMessage> tasks = new Queue<IIPCMessage>();
         public IPCBaseMessagesQueue() {
         }
 

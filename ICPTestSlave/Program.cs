@@ -25,10 +25,10 @@ namespace ICPTestSlave {
                 }
         }
 
-        public static void OnReceaveMessage(object sender, IIPCMessage message) {
+        public static void OnReceaveMessage(object sender, ReceaveMessageEventArgs e) {
 
-            Console.WriteLine(String.Format("Receaved message of type - {0} from sender with id = {1}", message.MessageType, message.SenderID.Value));
-            TestAsyncMessage testAsyncMessage = message as TestAsyncMessage;
+            Console.WriteLine(String.Format("Receaved message of type - {0} from sender with id = {1}", e.Message.MessageType, e.Message.SenderID.Value));
+            TestAsyncMessage testAsyncMessage = e.Message as TestAsyncMessage;
             if (testAsyncMessage != null) {
                 Console.WriteLine("Preparing responce to the master..." + testAsyncMessage.GetType().FullName);
                 TestAsyncMessage test = new TestAsyncMessage(new IPCReceaverGUID());
@@ -38,7 +38,7 @@ namespace ICPTestSlave {
                 return;
             }
 
-            TestAsyncComplexMessage testComplexAsyncMessage = message as TestAsyncComplexMessage;
+            TestAsyncComplexMessage testComplexAsyncMessage = e.Message as TestAsyncComplexMessage;
             if (testComplexAsyncMessage != null) {
                 Console.WriteLine("Preparing responce to the master..." + testComplexAsyncMessage.GetType().FullName);
                 TestAsyncComplexMessage test = new TestAsyncComplexMessage(new IPCReceaverGUID(),SlaveResponces.ConstructComplexResponceTemplate());
@@ -47,7 +47,7 @@ namespace ICPTestSlave {
                 return;
             }
 
-            TestSyncMessage testSyncMessage = message as TestSyncMessage;
+            TestSyncMessage testSyncMessage = e.Message as TestSyncMessage;
             if (testSyncMessage != null) {
                 Console.WriteLine("Emulation of some processing");
                 Thread.CurrentThread.Join(SlaveResponces.SyncMessageSlaveDelay);

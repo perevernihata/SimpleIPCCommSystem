@@ -18,6 +18,7 @@ namespace SimpleIPCCommSystem.Receavers {
         private EventWaitHandle _currentWaitHandle;
         private IPCBaseMessagesQueue _currentQueue;
         private IpcServerChannel channel;
+        private bool isDisposed = false;
 
         public BaseIPCReceaver() {
             _ownGUID = new IPCReceaverGUID();
@@ -41,27 +42,31 @@ namespace SimpleIPCCommSystem.Receavers {
             _worker.Start();
         }
 
+        ~BaseIPCReceaver() {
+            Dispose(false);
+        }
+
         private void ListenQueue() {
-                while (true) {
-                    IIPCMessage message = null;
-                    lock (_locker) {
-                        if (_currentQueue.Count() > 0) {
-                            message = _currentQueue.DequeueMessage();
-                        }
+            while (true) {
+                IIPCMessage message = null;
+                lock (_locker) {
+                    if (_currentQueue.Count() > 0) {
+                        message = _currentQueue.DequeueMessage();
                     }
-                    if (message != null) {
-                        if (message.MessageType == IPCDispatchType.Sync) {
-                            using (EventWaitHandle _dispatcherWaitHandle =
-                                new EventWaitHandle(false, EventResetMode.AutoReset, message.DispatherID.Value)) {
-                                OnReceaveIPCMessage(this, message);
-                                _dispatcherWaitHandle.Set();
-                            };
-                        } else {
-                            OnReceaveIPCMessage(this, message);
-                        }
-                    } else
-                        _currentWaitHandle.WaitOne();
                 }
+                if (message != null) {
+                    if (message.MessageType == IPCDispatchType.Sync) {
+                        using (EventWaitHandle _dispatcherWaitHandle =
+                            new EventWaitHandle(false, EventResetMode.AutoReset, message.DispatherID.Value)) {
+                            OnReceaveIPCMessage(this, new ReceaveMessageEventArgs(message));
+                            _dispatcherWaitHandle.Set();
+                        };
+                    } else {
+                        OnReceaveIPCMessage(this, new ReceaveMessageEventArgs(message));
+                    }
+                } else
+                    _currentWaitHandle.WaitOne();
+            }
         }
 
         protected virtual IIPCGUID DoGetReceaverID() {
@@ -76,11 +81,19 @@ namespace SimpleIPCCommSystem.Receavers {
             get { return DoGetReceaverID(); }
         }
 
+        private void Dispose(bool disposing) {
+            if (!isDisposed) {
+                _worker.Join();
+                _currentWaitHandle.Close();
+                RemotingServices.Disconnect(_currentQueue);
+                _currentWaitHandle.Dispose();
+                isDisposed = true;
+            }
+        }
 
         public void Dispose() {
-            _worker.Join();
-            _currentWaitHandle.Close();
-            RemotingServices.Disconnect(_currentQueue);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public event ReceaveIPCMessageEventHandler OnReceaveIPCMessage;

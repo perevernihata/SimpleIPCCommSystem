@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.IO;
 
 namespace IPCUnitTest {
-    
+
     public class SlaveManager : IDisposable {
 
         private Process slaveProc;
+        private bool _isDisposed = false;
 
         private void OnProcessExit(object sender, EventArgs e) {
             Dispose();
@@ -15,6 +16,10 @@ namespace IPCUnitTest {
         public SlaveManager() {
             // subscribe to be able kill and free resources before exit
             AppDomain.CurrentDomain.DomainUnload += OnProcessExit;
+        }
+
+        ~SlaveManager() {
+            Dispose(false);
         }
 
         public string GetSlavePath() {
@@ -37,21 +42,27 @@ namespace IPCUnitTest {
             if (!File.Exists(slaveStartInfo.FileName)) {
                 throw new Exception("Can't find the slave binaries!");
             }
-
-            //slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            //slaveStartInfo.CreateNoWindow = true;
-
+#if DEBUG
+            slaveStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            slaveStartInfo.CreateNoWindow = true;            
+#endif
             slaveProc = Process.Start(slaveStartInfo);
             return slaveProc.Id;
         }
 
-        public void Dispose() {
-            try {
-                slaveProc.Kill();
-            } catch (InvalidOperationException) {
-                // keep silence if process crashed   
+        private void Dispose(bool disposing) {
+            if (!_isDisposed) {
+                try {
+                    slaveProc.Kill();
+                } catch (InvalidOperationException) {
+                    // keep silence if process has been crashed   
+                }
+                slaveProc.Dispose();
             }
-            slaveProc.Dispose();
+        }
+
+        public void Dispose() {
+            Dispose(true);
         }
     }
 }

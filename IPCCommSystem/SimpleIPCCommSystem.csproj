@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Dispatchers\BaseIPCDispatcher.cs" />
     <Compile Include="Receavers\BaseIPCReceaver.cs" />
-    <Compile Include="Utilities\IIPCSharedObject.cs" />
+    <Compile Include="IIPCSharedObject.cs" />
     <Compile Include="IIPCUri.cs" />
     <Compile Include="IIPCMessage.cs" />
     <Compile Include="Messages\IPCBaseAsyncMessage.cs" />
